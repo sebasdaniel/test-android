@@ -4,21 +4,34 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sebasdev.gravilitytest.MainActivity;
 import com.sebasdev.gravilitytest.R;
+import com.sebasdev.gravilitytest.adapter.AppsAdapter;
+import com.sebasdev.gravilitytest.adapter.CategoriesAdapter;
+import com.sebasdev.gravilitytest.interfaces.FragmentInteractionListener;
+import com.sebasdev.gravilitytest.interfaces.ItemClickListener;
+import com.sebasdev.gravilitytest.model.App;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AppsFragment.OnFragmentInteractionListener} interface
+ * {@link FragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class AppsFragment extends Fragment {
+public class AppsFragment extends Fragment implements ItemClickListener<App> {
 
-    private OnFragmentInteractionListener mListener;
+    private FragmentInteractionListener mListener;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     public AppsFragment() {
         // Required empty public constructor
@@ -26,27 +39,23 @@ public class AppsFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_apps, container, false);
-    }
+        View v = inflater.inflate(R.layout.fragment_apps, container, false);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        setRecyclerView(v);
+
+        return v;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof FragmentInteractionListener) {
+            mListener = (FragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement FragmentInteractionListener");
         }
     }
 
@@ -56,14 +65,25 @@ public class AppsFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onItemClick(App item) {
+        Log.i("Apps", "Seleccionada: " + item.getName());
+    }
+
+    private void setRecyclerView(View v) {
+
+        mRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view_apps);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // specify an adapter (see also next example)
+        mAdapter = new AppsAdapter(MainActivity.apps, this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 }
