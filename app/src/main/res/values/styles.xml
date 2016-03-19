@@ -13,4 +13,15 @@
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
+    <!-- Theme for dialog animation -->
+    <style name="FadeDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowAnimationStyle">@style/FadeDialogAnimation</item>
+    </style>
+
+    <!-- Dialog animation -->
+    <style name="FadeDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/fade_in</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
+
 </resources>

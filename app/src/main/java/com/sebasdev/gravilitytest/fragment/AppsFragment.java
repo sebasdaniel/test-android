@@ -74,7 +74,7 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
 
     @Override
     public void onItemClick(App item) {
-        Log.i("Apps", "Seleccionada: " + item.getName());
+//        Log.i("Apps", "Seleccionada: " + item.getName());
         selectedApp = item;
         showDialog();
     }
@@ -114,6 +114,7 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
         builder.setView(v);
 
         final AlertDialog dialog = builder.create();
+        dialog.getWindow().getAttributes().windowAnimations = R.style.FadeDialogAnimation;
 
         ImageView image = (ImageView) v.findViewById(R.id.infoImageApp);
         TextView tvName = (TextView) v.findViewById(R.id.infoTvAppName);

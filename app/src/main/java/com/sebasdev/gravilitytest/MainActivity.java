@@ -1,6 +1,5 @@
 package com.sebasdev.gravilitytest;
 
-import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -63,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
     // Options menu click, process menu icon
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i("currentFragment", "currentFragment es: " + currentFragment + "\nHome id: " + R.id.home + ", selected id: " + item.getItemId());
+//        Log.i("currentFragment", "currentFragment es: " + currentFragment + "\nHome id: " + R.id.home + ", selected id: " + item.getItemId());
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (currentFragment == FRAGMENT_APPS) {
@@ -97,8 +96,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         // add the fragment to container
         if (fragment == FRAGMENT_CATEGORIES) {
 
-            currentFragment = FRAGMENT_CATEGORIES;
+            transaction.setCustomAnimations(R.anim.pop_in, R.anim.pop_out);
             transaction.replace(R.id.main_content, categoriesFragment);
+            currentFragment = FRAGMENT_CATEGORIES;
 
             if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle("Categorias");
@@ -106,12 +106,13 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         } else {
             if (fragment == FRAGMENT_APPS) {
 
-                currentFragment = FRAGMENT_APPS;
+                transaction.setCustomAnimations(R.anim.set_in, R.anim.set_out);
+                transaction.replace(R.id.main_content, appsFragment);
 
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_arrow_back);
 
-                transaction.replace(R.id.main_content, appsFragment);
+                currentFragment = FRAGMENT_APPS;
 
             } else {
                 Log.e("setFragment", "fragment no especidicado");
