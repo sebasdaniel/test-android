@@ -9,9 +9,6 @@ import com.sebasdev.gravilitytest.model.Category;
  */
 public interface FragmentInteractionListener {
 
-    // All fragments
-    void onChangeFragment(int fragment);
-
     // Fragment categories
     void onSetApps(Category category);
 }

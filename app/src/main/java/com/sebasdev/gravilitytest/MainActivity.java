@@ -1,5 +1,6 @@
 package com.sebasdev.gravilitytest;
 
+import android.content.pm.ActivityInfo;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
     private CategoriesFragment categoriesFragment;
     private AppsFragment appsFragment;
     private int currentFragment;
+    private boolean portrait = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,15 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         categoriesFragment = new CategoriesFragment();
         appsFragment = new AppsFragment();
 
-        setFragment(FRAGMENT_CATEGORIES);
+        portrait = getResources().getBoolean(R.bool.portrait);
+
+        if(portrait){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            setFragment(FRAGMENT_CATEGORIES);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            setFragments();
+        }
     }
 
     @Override
@@ -122,9 +132,21 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         transaction.commit();
     }
 
-    @Override
-    public void onChangeFragment(int fragment) {
-        setFragment(fragment);
+    private void setFragments() {
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        transaction.replace(R.id.main_content, categoriesFragment);
+        transaction.commit();
+
+        transaction.replace(R.id.display_content, appsFragment);
+        transaction.commit();
+    }
+
+    private void updateAppsFragment() {
+        // TODO: 19/03/16 update info fragment
     }
 
     @Override
@@ -132,5 +154,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         // TODO: 17/03/16 set the aplications for specific category
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(category.getLabel());
+
+        setFragment(FRAGMENT_APPS);
     }
 }

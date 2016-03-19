@@ -83,6 +83,5 @@ public class CategoriesFragment extends Fragment implements ItemClickListener<Ca
     @Override
     public void onItemClick(Category category) {
         mListener.onSetApps(category);
-        mListener.onChangeFragment(MainActivity.FRAGMENT_APPS);
     }
 }
