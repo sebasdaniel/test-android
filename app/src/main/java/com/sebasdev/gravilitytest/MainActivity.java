@@ -1,6 +1,9 @@
 package com.sebasdev.gravilitytest;
 
+import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.sebasdev.gravilitytest.fragment.AppsFragment;
 import com.sebasdev.gravilitytest.fragment.CategoriesFragment;
@@ -24,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
     public static final int FRAGMENT_CATEGORIES = 0;
     public static final int FRAGMENT_APPS = 1;
 
+    public static boolean isOnline;
     public static List<App> apps = new ArrayList<>();
     public static List<Category> categories = new ArrayList<>();
 
@@ -49,6 +55,13 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         setContentView(R.layout.activity_main);
 
         setToolbar();
+
+        isOnline = isConnected();
+
+        if (!isOnline) {
+            TextView tvNetworkAlert = (TextView) findViewById(R.id.tvNetworkAlert);
+            tvNetworkAlert.setVisibility(View.VISIBLE);
+        }
 
         categoriesFragment = new CategoriesFragment();
         appsFragment = new AppsFragment();
@@ -147,6 +160,18 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
     private void updateAppsFragment() {
         // TODO: 19/03/16 update info fragment
+    }
+
+    private boolean isConnected() {
+
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
