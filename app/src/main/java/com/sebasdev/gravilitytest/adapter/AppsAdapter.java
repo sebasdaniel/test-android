@@ -26,18 +26,21 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppsViewHolder
 
         public ImageView appImg;
         public TextView appName;
+        public TextView appAuthor;
 
         public AppsViewHolder(View v) {
             super(v);
 
             appImg = (ImageView) v.findViewById(R.id.imageApp);
             appName = (TextView) v.findViewById(R.id.tvAppName);
+            appAuthor = (TextView) v.findViewById(R.id.tvAppAuthor);
         }
 
         public void bind(final App app, final ItemClickListener listener) {
-
+            // TODO: 18/03/16 condition for Picasso, charge image only when app has internet connection to
             Picasso.with(itemView.getContext()).load(app.getImage()).fit().into(appImg);
             appName.setText(app.getName());
+            appAuthor.setText(app.getAuthor());
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {

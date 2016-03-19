@@ -6,6 +6,8 @@ package com.sebasdev.gravilitytest.model;
 public class App {
 
     private String name;
+    private String author;
+    private String price;
     private String description;
     private String image;
     private Category category;
@@ -13,8 +15,10 @@ public class App {
     public App() {
     }
 
-    public App(String name, String description, String image, Category category) {
+    public App(String name, String author, String price, String description, String image, Category category) {
         this.name = name;
+        this.author = author;
+        this.price = price;
         this.description = description;
         this.image = image;
         this.category = category;
@@ -26,6 +30,22 @@ public class App {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 
     public String getDescription() {

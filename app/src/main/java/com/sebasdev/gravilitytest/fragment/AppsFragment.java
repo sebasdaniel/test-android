@@ -4,12 +4,16 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.sebasdev.gravilitytest.MainActivity;
 import com.sebasdev.gravilitytest.R;
@@ -18,6 +22,7 @@ import com.sebasdev.gravilitytest.adapter.CategoriesAdapter;
 import com.sebasdev.gravilitytest.interfaces.FragmentInteractionListener;
 import com.sebasdev.gravilitytest.interfaces.ItemClickListener;
 import com.sebasdev.gravilitytest.model.App;
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +37,8 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    private App selectedApp = null;
 
     public AppsFragment() {
         // Required empty public constructor
@@ -68,6 +75,15 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
     @Override
     public void onItemClick(App item) {
         Log.i("Apps", "Seleccionada: " + item.getName());
+        selectedApp = item;
+        showDialog();
+    }
+
+    private void showDialog() {
+        if (selectedApp != null)
+            createInfoDialog().show();
+        else
+            Log.e("CreateDialog", "La app seleccionada es null");
     }
 
     private void setRecyclerView(View v) {
@@ -82,8 +98,48 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        // specify an adapter (see also next example)
+        // specify an adapter
         mAdapter = new AppsAdapter(MainActivity.apps, this);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    public AlertDialog createInfoDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        View v = inflater.inflate(R.layout.dialog_app_detail, null);
+
+        builder.setView(v);
+
+        final AlertDialog dialog = builder.create();
+
+        ImageView image = (ImageView) v.findViewById(R.id.infoImageApp);
+        TextView tvName = (TextView) v.findViewById(R.id.infoTvAppName);
+        TextView tvAuthor = (TextView) v.findViewById(R.id.infoTvAppAuthor);
+        TextView tvPrice = (TextView) v.findViewById(R.id.infoTvAppPrice);
+        TextView tvDescription = (TextView) v.findViewById(R.id.infoTvAppDescription);
+
+        // TODO: 18/03/16 condition for Picasso, charge image only when app has internet connection to
+        Picasso.with(getContext()).load(selectedApp.getImage()).into(image);
+
+        tvName.setText(selectedApp.getName());
+        tvAuthor.setText("Autor: " + selectedApp.getAuthor());
+        tvPrice.setText("Precio: " + selectedApp.getPrice());
+        tvDescription.setText(selectedApp.getDescription());
+
+        Button cerrar = (Button) v.findViewById(R.id.btnCloseInfo);
+
+        cerrar.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                }
+        );
+
+        return dialog;
     }
 }
