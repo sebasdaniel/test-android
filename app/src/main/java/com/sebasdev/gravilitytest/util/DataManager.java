@@ -1,8 +1,15 @@
 package com.sebasdev.gravilitytest.util;
 
+import android.util.Log;
+
 import com.sebasdev.gravilitytest.model.App;
 import com.sebasdev.gravilitytest.model.Category;
+import com.sebasdev.gravilitytest.network.ServiceRequest;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -10,6 +17,7 @@ import java.util.ArrayList;
  */
 public class DataManager {
 
+    private static final String SERVICE_URL = "https://itunes.apple.com/us/rss/topfreeapplications/limit=20/json";
     private static ArrayList<App> apps = null;
     private static ArrayList<Category> categories = null;
 
@@ -44,7 +52,22 @@ public class DataManager {
     }
 
     public static void getServiceData() {
-        // TODO: 19/03/16 obtener los datos del servicio
+        // TODO: 19/03/16 procesar json
+        // TODO: 19/03/16 validar si hay conexion para obtenerlos de internet o de la bd
+
+        ServiceRequest request = new ServiceRequest();
+        try {
+            String result = request.requestGet(SERVICE_URL);
+
+            JSONObject jsonResult = new JSONObject(result);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d("DataManager", "Error al obtener respuesta del servidor");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.d("DataManager", "Error al procesar la respuesta, parece que no es un JSON valido");
+        }
 
         categories = new ArrayList<>();
 
