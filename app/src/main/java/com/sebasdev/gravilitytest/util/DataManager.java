@@ -6,6 +6,7 @@ import com.sebasdev.gravilitytest.model.App;
 import com.sebasdev.gravilitytest.model.Category;
 import com.sebasdev.gravilitytest.network.ServiceRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,37 +52,104 @@ public class DataManager {
         return categories;
     }
 
+    public static Category getCategory(int id) {
+        for (Category category : categories) {
+            if (category.getId() == id) {
+                return category;
+            }
+        }
+        return null;
+    }
+
+    public static boolean isCategory(int id) {
+        for (Category category : categories) {
+            if (category.getId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void getServiceData() {
         // TODO: 19/03/16 procesar json
         // TODO: 19/03/16 validar si hay conexion para obtenerlos de internet o de la bd
 
         ServiceRequest request = new ServiceRequest();
         try {
-            String result = request.requestGet(SERVICE_URL);
+            String result = request.requestString(SERVICE_URL);
 
             JSONObject jsonResult = new JSONObject(result);
 
+            JSONObject feed = jsonResult.getJSONObject("feed");
+            JSONArray entry = feed.getJSONArray("entry");
+
+            apps = new ArrayList<>();
+            categories = new ArrayList<>();
+
+            // procesar el json
+            for (int i=0; i<entry.length(); i++) {
+
+                App app = new App();
+                JSONObject appJson = entry.getJSONObject(i);
+
+                JSONObject appName = appJson.getJSONObject("im:name");
+                app.setName(appName.getString("label"));
+
+                JSONArray imgArray = appJson.getJSONArray("im:image");
+                app.setImage(getUrlImage(imgArray));
+
+                JSONObject appSummary = appJson.getJSONObject("summary");
+                app.setDescription(appSummary.getString("label"));
+
+                JSONObject appPriceAttributes = appJson.getJSONObject("im:price").getJSONObject("attributes");
+                app.setPrice(appPriceAttributes.getString("currency") + " " + appPriceAttributes.getString("amount"));
+
+                JSONObject appAuthor = appJson.getJSONObject("im:artist");
+                app.setAuthor(appAuthor.getString("label"));
+
+                JSONObject catAttributes = appJson.getJSONObject("category").getJSONObject("attributes");
+                int idCategory = Integer.parseInt(catAttributes.getString("im:id"));
+
+                // set the category if it exists, else create a new category
+                if (isCategory(idCategory)) {
+                    app.setCategory(getCategory(idCategory));
+
+                } else {
+                    Category category = new Category();
+
+                    category.setId(idCategory);
+                    category.setLabel(catAttributes.getString("label"));
+
+                    app.setCategory(category);
+
+                    categories.add(category);
+                }
+
+                apps.add(app);
+            }
+
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             Log.d("DataManager", "Error al obtener respuesta del servidor");
         } catch (JSONException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             Log.d("DataManager", "Error al procesar la respuesta, parece que no es un JSON valido");
         }
+    }
 
-        categories = new ArrayList<>();
+    // obtiene la url de la imagen
+    private static String getUrlImage(JSONArray imgArray) throws JSONException {
 
-        categories.add(new Category(1, "Deportes"));
-        categories.add(new Category(2, "Entretenimiento"));
-        categories.add(new Category(3, "Juegos"));
-        categories.add(new Category(4, "Adultos"));
+        for (int i=0; i<imgArray.length(); i++) {
 
-        apps = new ArrayList<>();
+            JSONObject imgObj = imgArray.getJSONObject(i);
+            JSONObject imgAttributes = imgObj.getJSONObject("attributes");
 
-        apps.add(new App("App uno", "Autor de app", "USD 1.9", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur lacus nulla, rutrum sodales condimentum a, ullamcorper pretium lorem.", "http://es.fordesigner.com/imguploads/Image/cjbc/zcool/png20080526/1211808744.png", categories.get(0)));
-        apps.add(new App("App dos", "Autor de app", "USD 0.5", "App de prueba 2", "http://es.fordesigner.com/imguploads/Image/cjbc/zcool/png20080526/1211808744.png", categories.get(0)));
-        apps.add(new App("App tres", "Autor de app", "USD 0.0", "App de prueba 3", "http://es.fordesigner.com/imguploads/Image/cjbc/zcool/png20080526/1211808744.png", categories.get(0)));
-        apps.add(new App("App cuatro", "Autor de app", "USD 0.0", "App de prueba 4", "http://es.fordesigner.com/imguploads/Image/cjbc/zcool/png20080526/1211808744.png", categories.get(1)));
-        apps.add(new App("App cinco", "Autor de app", "USD 1.9", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur lacus nulla, rutrum sodales condimentum a, ullamcorper pretium lorem.", "http://es.fordesigner.com/imguploads/Image/cjbc/zcool/png20080526/1211808744.png", categories.get(1)));
+            if (imgAttributes.getString("height").equals("100")) {
+                return imgObj.getString("label");
+            }
+        }
+
+        return imgArray.getJSONObject(0).getString("label");
     }
 }

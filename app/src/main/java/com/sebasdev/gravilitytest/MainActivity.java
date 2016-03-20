@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -33,8 +34,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
     public static final int FRAGMENT_APPS = 1;
 
     public static boolean isOnline;
-//    public static List<App> apps = new ArrayList<>();
-//    public static List<Category> categories = new ArrayList<>();
 
     private CategoriesFragment categoriesFragment;
     private AppsFragment appsFragment;
@@ -62,10 +61,8 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
         if(portrait){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//            setFragment(FRAGMENT_CATEGORIES);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//            setFragments();
         }
 
         Loader loader = new Loader();
@@ -98,10 +95,12 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_launcher);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(R.string.app_name);
+        ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(R.mipmap.ic_launcher);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(R.string.app_name);
         }
     }
 
@@ -188,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
             mDialog = new ProgressDialog(MainActivity.this);
             mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mDialog.setMessage("Cargando Datos");
+            mDialog.setCancelable(false);
             mDialog.show();
         }
 
