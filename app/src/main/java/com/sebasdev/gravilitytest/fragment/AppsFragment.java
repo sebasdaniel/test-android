@@ -22,7 +22,11 @@ import com.sebasdev.gravilitytest.adapter.CategoriesAdapter;
 import com.sebasdev.gravilitytest.interfaces.FragmentInteractionListener;
 import com.sebasdev.gravilitytest.interfaces.ItemClickListener;
 import com.sebasdev.gravilitytest.model.App;
+import com.sebasdev.gravilitytest.model.Category;
+import com.sebasdev.gravilitytest.util.DataManager;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,11 +43,16 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
     private RecyclerView.LayoutManager mLayoutManager;
 
     private App selectedApp = null;
+    private ArrayList<App> apps;
 
     public AppsFragment() {
         // Required empty public constructor
     }
 
+
+    public void setApps(ArrayList<App> apps) {
+        this.apps = apps;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,12 +103,13 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
+        // TODO: 19/03/16 use other layout manager when is tablet
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter
-        mAdapter = new AppsAdapter(MainActivity.apps, this);
+        mAdapter = new AppsAdapter(apps, this);
         mRecyclerView.setAdapter(mAdapter);
     }
 

@@ -16,6 +16,7 @@ import com.sebasdev.gravilitytest.adapter.CategoriesAdapter;
 import com.sebasdev.gravilitytest.interfaces.FragmentInteractionListener;
 import com.sebasdev.gravilitytest.interfaces.ItemClickListener;
 import com.sebasdev.gravilitytest.model.Category;
+import com.sebasdev.gravilitytest.util.DataManager;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,7 +60,7 @@ public class CategoriesFragment extends Fragment implements ItemClickListener<Ca
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new CategoriesAdapter(MainActivity.categories, this);
+        mAdapter = new CategoriesAdapter(DataManager.getCategories(), this);
         mRecyclerView.setAdapter(mAdapter);
     }
 

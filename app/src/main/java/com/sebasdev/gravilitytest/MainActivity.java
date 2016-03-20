@@ -1,9 +1,11 @@
 package com.sebasdev.gravilitytest;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,7 @@ import com.sebasdev.gravilitytest.fragment.CategoriesFragment;
 import com.sebasdev.gravilitytest.interfaces.FragmentInteractionListener;
 import com.sebasdev.gravilitytest.model.App;
 import com.sebasdev.gravilitytest.model.Category;
+import com.sebasdev.gravilitytest.util.DataManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,19 +33,8 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
     public static final int FRAGMENT_APPS = 1;
 
     public static boolean isOnline;
-    public static List<App> apps = new ArrayList<>();
-    public static List<Category> categories = new ArrayList<>();
-
-    static {
-        categories.add(new Category(1, "Deportes"));
-        categories.add(new Category(2, "Entretenimiento"));
-        categories.add(new Category(3, "Juegos"));
-        categories.add(new Category(4, "Adultos"));
-
-        apps.add(new App("App uno", "Autor de app", "USD 1.9", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur lacus nulla, rutrum sodales condimentum a, ullamcorper pretium lorem.", "http://es.fordesigner.com/imguploads/Image/cjbc/zcool/png20080526/1211808744.png", categories.get(0)));
-        apps.add(new App("App dos", "Autor de app", "USD 0.5", "App de prueba 2", "http://es.fordesigner.com/imguploads/Image/cjbc/zcool/png20080526/1211808744.png", categories.get(0)));
-        apps.add(new App("App tres", "Autor de app", "USD 0.0", "App de prueba 3", "http://es.fordesigner.com/imguploads/Image/cjbc/zcool/png20080526/1211808744.png", categories.get(0)));
-    }
+//    public static List<App> apps = new ArrayList<>();
+//    public static List<Category> categories = new ArrayList<>();
 
     private CategoriesFragment categoriesFragment;
     private AppsFragment appsFragment;
@@ -70,11 +62,14 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
         if(portrait){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            setFragment(FRAGMENT_CATEGORIES);
+//            setFragment(FRAGMENT_CATEGORIES);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            setFragments();
+//            setFragments();
         }
+
+        Loader loader = new Loader();
+        loader.execute();
     }
 
     @Override
@@ -180,6 +175,39 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(category.getLabel());
 
+        appsFragment.setApps(DataManager.getAppsByCategory(category));
         setFragment(FRAGMENT_APPS);
+    }
+
+    private class Loader extends AsyncTask<Void, Void, Void> {
+
+        private ProgressDialog mDialog;
+
+        @Override
+        protected void onPreExecute() {
+            mDialog = new ProgressDialog(MainActivity.this);
+            mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mDialog.setMessage("Cargando Datos");
+            mDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            DataManager.getServiceData();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            // TODO: 19/03/16 detener el dialogo de cargando
+            mDialog.dismiss();
+
+            if(portrait){
+                setFragment(FRAGMENT_CATEGORIES);
+            } else {
+                setFragments();
+            }
+        }
     }
 }
