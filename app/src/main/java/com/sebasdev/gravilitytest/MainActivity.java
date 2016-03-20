@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +26,9 @@ import com.sebasdev.gravilitytest.model.App;
 import com.sebasdev.gravilitytest.model.Category;
 import com.sebasdev.gravilitytest.util.DataManager;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -170,17 +174,20 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
     @Override
     public void onSetApps(Category category) {
-        // TODO: 17/03/16 set the aplications for specific category
+
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(category.getLabel());
 
+        // TODO: 20/03/16 verify if it's tablet or landcape
         appsFragment.setApps(DataManager.getAppsByCategory(category));
         setFragment(FRAGMENT_APPS);
     }
 
-    private class Loader extends AsyncTask<Void, Void, Void> {
+    private class Loader extends AsyncTask<Void, Void, Boolean> {
 
+        private final String DEBUG_TAG = "MainActivity.Loader";
         private ProgressDialog mDialog;
+        private String error = "";
 
         @Override
         protected void onPreExecute() {
@@ -192,22 +199,44 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
 
-            DataManager.getServiceData();
-            return null;
+            try {
+                DataManager.getServiceData();
+                return true;
+            } catch (IOException e) {
+//                e.printStackTrace();
+                error = "No se pudo obtener respuesta del servidor";
+                Log.d(DEBUG_TAG, error);
+            } catch (JSONException e) {
+//                e.printStackTrace();
+                error = "No se pudo procesar la respuesta, parece que no es un JSON válido";
+                Log.d(DEBUG_TAG, error);
+            }
+            return false;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            // TODO: 19/03/16 detener el dialogo de cargando
+        protected void onPostExecute(Boolean result) {
             mDialog.dismiss();
 
-            if(portrait){
-                setFragment(FRAGMENT_CATEGORIES);
+            if (result) {
+                if(portrait){
+                    setFragment(FRAGMENT_CATEGORIES);
+                } else {
+                    setFragments();
+                }
             } else {
-                setFragments();
+                showErrorDialog();
             }
+        }
+
+        private void showErrorDialog() {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Error")
+                    .setMessage(error)
+                    .setPositiveButton("Aceptar", null)
+                    .show();
         }
     }
 }
