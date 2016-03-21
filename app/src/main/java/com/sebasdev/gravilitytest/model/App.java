@@ -1,9 +1,14 @@
 package com.sebasdev.gravilitytest.model;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import com.sebasdev.gravilitytest.R;
 
 /**
  * Created by m4605 on 16/03/16.
+ * App model object
  */
 public class App {
 
@@ -15,8 +20,8 @@ public class App {
     private Bitmap imageBitmap;
     private Category category;
 
-    // TODO: 21/03/16 set default bitmap from image resource
     public App() {
+        imageBitmap = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.img_not_found);
     }
 
     public App(String name, String author, String price, String description, String image, Bitmap imageBitmap, Category category) {

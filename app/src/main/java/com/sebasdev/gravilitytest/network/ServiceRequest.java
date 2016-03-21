@@ -14,6 +14,7 @@ import java.net.URL;
 
 /**
  * Created by m4605 on 19/03/16.
+ * Manage the request to the server
  */
 public class ServiceRequest {
 
@@ -22,14 +23,23 @@ public class ServiceRequest {
     public ServiceRequest() {
     }
 
+    /**
+     * Request a String response using GET method
+     */
     public String requestString(String url) throws IOException {
         return requestGet(url);
     }
 
+    /**
+     * Request an image in Bitmap using GET method
+     */
     public Bitmap requestImage(String url) throws IOException {
         return requestGetImage(url);
     }
 
+    /**
+     * Do the request with String response
+     */
     private String requestGet(String url) throws IOException {
 
         InputStream is = null;
@@ -64,6 +74,9 @@ public class ServiceRequest {
         }
     }
 
+    /**
+     * Do the request with Bitmap response
+     */
     private Bitmap requestGetImage(String url) throws IOException {
 
         InputStream is = null;
@@ -99,6 +112,9 @@ public class ServiceRequest {
         }
     }
 
+    /**
+     * Convert a response in String
+     */
     private String readString(InputStream stream) throws IOException {
 
         Reader reader = new InputStreamReader(stream, "UTF-8");
@@ -116,6 +132,9 @@ public class ServiceRequest {
         return result;
     }
 
+    /**
+     * Convert the response in Bitmap
+     */
     private Bitmap readImage(InputStream stream) {
 
         Bitmap bitmap = BitmapFactory.decodeStream(stream);

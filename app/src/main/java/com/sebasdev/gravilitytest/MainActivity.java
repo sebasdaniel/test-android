@@ -6,12 +6,12 @@ import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -22,15 +22,12 @@ import android.widget.TextView;
 import com.sebasdev.gravilitytest.fragment.AppsFragment;
 import com.sebasdev.gravilitytest.fragment.CategoriesFragment;
 import com.sebasdev.gravilitytest.interfaces.FragmentInteractionListener;
-import com.sebasdev.gravilitytest.model.App;
 import com.sebasdev.gravilitytest.model.Category;
 import com.sebasdev.gravilitytest.util.DataManager;
 
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements FragmentInteractionListener {
 
@@ -53,22 +50,20 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
         isOnline = isConnected();
 
+        // if there is no connection, show a text telling it
         if (!isOnline) {
             TextView tvNetworkAlert = (TextView) findViewById(R.id.tvNetworkAlert);
-            tvNetworkAlert.setVisibility(View.VISIBLE);
+            if (tvNetworkAlert != null) {
+                tvNetworkAlert.setVisibility(View.VISIBLE);
+            }
         }
 
         categoriesFragment = new CategoriesFragment();
         appsFragment = new AppsFragment();
 
-        portrait = getResources().getBoolean(R.bool.portrait);
+        setDeviceOrientation();
 
-        if(portrait){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
-
+        // charge data before set a fragment
         Loader loader = new Loader();
         loader.execute();
     }
@@ -78,10 +73,11 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         return super.onCreateOptionsMenu(menu);
     }
 
-    // Options menu click, process menu icon
+    /**
+     * Process the menu icon click
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-//        Log.i("currentFragment", "currentFragment es: " + currentFragment + "\nHome id: " + R.id.home + ", selected id: " + item.getItemId());
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (currentFragment == FRAGMENT_APPS) {
@@ -94,6 +90,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Set and configure the app toolbar
+     */
     private void setToolbar() {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -108,6 +107,22 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         }
     }
 
+    /**
+     * Set the correct device orientation of the app
+     */
+    private void setDeviceOrientation() {
+        portrait = getResources().getBoolean(R.bool.portrait);
+
+        if(portrait){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+    }
+
+    /**
+     * Load a specified fragment as main content of the app, if it is portrait orientation
+     */
     private void setFragment(int fragment) {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -143,6 +158,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         transaction.commit();
     }
 
+    /**
+     * Set all fragments if the app orientation is landscape
+     */
     private void setFragments() {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -156,10 +174,16 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         transaction.commit();
     }
 
+    /**
+     * Set the new data for AppsFragment and show it
+     */
     private void updateAppsFragment() {
         // TODO: 19/03/16 update info fragment for tablet layout
     }
 
+    /**
+     * Return true if there is connection
+     */
     private boolean isConnected() {
 
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -172,8 +196,11 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         return false;
     }
 
+    /**
+     * Implementation of interaction listener that allows the categoriesFragment communicates the selected item
+     */
     @Override
-    public void onSetApps(Category category) {
+    public void onSelectCategory(Category category) {
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(category.getLabel());
@@ -183,12 +210,18 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         setFragment(FRAGMENT_APPS);
     }
 
+    /**
+     * Task that load the app data
+     */
     private class Loader extends AsyncTask<Void, Void, Boolean> {
 
         private final String DEBUG_TAG = "MainActivity.Loader";
         private ProgressDialog mDialog;
         private String error = "";
 
+        /**
+         * Show a charging data progres dialog
+         */
         @Override
         protected void onPreExecute() {
             mDialog = new ProgressDialog(MainActivity.this);
@@ -200,7 +233,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
             // if it's online but there is a error, load the values from database and show error, else only load from database
             if (isOnline) {
 
@@ -215,15 +247,18 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                     Log.d(DEBUG_TAG, error);
                 }
 
-                DataManager.getDBData(MainActivity.this);
+                DataManager.getCachedData(MainActivity.this);
                 return false;
 
             } else {
-                DataManager.getDBData(MainActivity.this);
+                DataManager.getCachedData(MainActivity.this);
                 return true;
             }
         }
 
+        /**
+         * Show if there is errors and charge fragment(s)
+         */
         @Override
         protected void onPostExecute(Boolean result) {
             mDialog.dismiss();
@@ -238,6 +273,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
             }
         }
 
+        /**
+         * Dialog that show loading errors
+         */
         private void showErrorDialog() {
             new AlertDialog.Builder(MainActivity.this)
                     .setTitle("Error")

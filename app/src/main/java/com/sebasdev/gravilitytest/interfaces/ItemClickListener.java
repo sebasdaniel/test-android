@@ -2,7 +2,7 @@ package com.sebasdev.gravilitytest.interfaces;
 
 /**
  * Created by m4605 on 17/03/16.
- * Interface for get event click in lists, like RecyclerView
+ * Generic interface for implement lists clicks, like RecyclerView
  */
 public interface ItemClickListener<T> {
 

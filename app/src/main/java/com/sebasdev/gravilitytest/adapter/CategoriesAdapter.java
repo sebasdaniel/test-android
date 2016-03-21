@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by m4605 on 17/03/16.
+ * Adapter that show the list of categories using RecyclerView with only a TetView
  */
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.CategoriesViewHolder> {
 

@@ -19,6 +19,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    /**
+     * Set support for table relations
+     */
     @Override
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
@@ -31,6 +34,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Create the DB tables
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         // create table category
@@ -48,12 +54,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(category) REFERENCES " + CATEGORY_TABLE_NAME + "(id))");
     }
 
+    /**
+     * When upgrade the schema recreate the database
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // on upgrade drop older tables...
+        // drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + CATEGORY_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + APP_TABLE_NAME);
-        // ...and create new table
+        // create new tables
         onCreate(db);
     }
 }

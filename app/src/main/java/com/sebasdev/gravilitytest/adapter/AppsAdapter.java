@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * Created by m4605 on 17/03/16.
+ * Adapter that show the list of apps using RecyclerView with CardView layout
  */
 public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppsViewHolder> {
 

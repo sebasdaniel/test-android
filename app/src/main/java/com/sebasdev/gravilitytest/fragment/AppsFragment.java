@@ -77,13 +77,18 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
         mListener = null;
     }
 
+    /**
+     * When touch an app
+     */
     @Override
     public void onItemClick(App item) {
-//        Log.i("Apps", "Seleccionada: " + item.getName());
         selectedApp = item;
         showDialog();
     }
 
+    /**
+     * Open the information dialog
+     */
     private void showDialog() {
         if (selectedApp != null)
             createInfoDialog().show();
@@ -109,6 +114,9 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    /**
+     * Dialog that show the app information
+     */
     public AlertDialog createInfoDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

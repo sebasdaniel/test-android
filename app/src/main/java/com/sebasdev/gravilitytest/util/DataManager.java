@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 /**
  * Created by m4605 on 19/03/16.
+ * Manage the app data
  */
 public class DataManager {
 
@@ -24,14 +25,23 @@ public class DataManager {
     private static ArrayList<App> apps = new ArrayList<>();
     private static ArrayList<Category> categories = new ArrayList<>();
 
+    /**
+     * Return apps
+     */
     public static ArrayList<App> getApps() {
         return apps;
     }
 
+    /**
+     * Return categories
+     */
     public static ArrayList<Category> getCategories() {
         return categories;
     }
 
+    /**
+     * Return apps that match the category parameter
+     */
     public static ArrayList<App> getAppsByCategory(Category category) {
 
         ArrayList<App> appsByCategory = new ArrayList<>();
@@ -52,6 +62,9 @@ public class DataManager {
         }
     }
 
+    /**
+     * Return a category that match the id parameter
+     */
     public static Category getCategory(int id) {
 
         for (Category category : categories) {
@@ -62,6 +75,9 @@ public class DataManager {
         return null;
     }
 
+    /**
+     * Return true if exists a category that match the id parameter
+     */
     public static boolean isCategory(int id) {
         for (Category category : categories) {
             if (category.getId() == id) {
@@ -71,6 +87,9 @@ public class DataManager {
         return false;
     }
 
+    /**
+     * Get the app data from the server
+     */
     public static void getServiceData(Context context) throws IOException, JSONException {
 
         ServiceRequest request = new ServiceRequest();
@@ -82,7 +101,7 @@ public class DataManager {
         JSONObject feed = jsonResult.getJSONObject("feed");
         JSONArray entry = feed.getJSONArray("entry");
 
-        // procesar el json
+        // process JSON
         for (int i=0; i<entry.length(); i++) {
 
             App app = new App();
@@ -106,7 +125,7 @@ public class DataManager {
             JSONObject catAttributes = appJson.getJSONObject("category").getJSONObject("attributes");
             int idCategory = Integer.parseInt(catAttributes.getString("im:id"));
 
-            Bitmap imageBitmap = request.requestImage(app.getImage()); // TODO: 21/03/16 set default image if not get response
+            Bitmap imageBitmap = request.requestImage(app.getImage());
             app.setImageBitmap(imageBitmap);
 
             // set the category if it exists, else create a new category
@@ -132,7 +151,10 @@ public class DataManager {
         conn.syncDataBase(apps, categories);
     }
 
-    public static void getDBData(Context context) {
+    /**
+     * Get the app data from the SQLite database
+     */
+    public static void getCachedData(Context context) {
 
         DataBaseConnexion conn = new DataBaseConnexion(context);
 
@@ -140,9 +162,12 @@ public class DataManager {
         categories = conn.getCategories();
     }
 
-    // obtiene la url de la imagen
+    /**
+     * Get the URL of image from a JSONArray that contains various image's url
+     */
     private static String getUrlImage(JSONArray imgArray) throws JSONException {
 
+        // search the biggest image
         for (int i=0; i<imgArray.length(); i++) {
 
             JSONObject imgObj = imgArray.getJSONObject(i);
@@ -152,7 +177,7 @@ public class DataManager {
                 return imgObj.getString("label");
             }
         }
-
+        // if not find the biggest image, return the first one
         return imgArray.getJSONObject(0).getString("label");
     }
 }

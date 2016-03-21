@@ -1,7 +1,6 @@
 package com.sebasdev.gravilitytest.fragment;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sebasdev.gravilitytest.MainActivity;
 import com.sebasdev.gravilitytest.R;
 import com.sebasdev.gravilitytest.adapter.CategoriesAdapter;
 import com.sebasdev.gravilitytest.interfaces.FragmentInteractionListener;
@@ -81,8 +79,11 @@ public class CategoriesFragment extends Fragment implements ItemClickListener<Ca
         mListener = null;
     }
 
+    /**
+     * When touch an item from the list of categories
+     */
     @Override
     public void onItemClick(Category category) {
-        mListener.onSetApps(category);
+        mListener.onSelectCategory(category);
     }
 }

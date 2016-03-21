@@ -2,6 +2,7 @@ package com.sebasdev.gravilitytest.model;
 
 /**
  * Created by m4605 on 16/03/16.
+ * Category model object
  */
 public class Category {
 
