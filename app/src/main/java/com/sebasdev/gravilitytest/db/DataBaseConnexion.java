@@ -30,7 +30,7 @@ public class DataBaseConnexion {
     }
 
     /**
-     * Recreate database for sync it width the new values
+     * Recreate database for sync it with the new values
      */
     public void syncDataBase(ArrayList<App> apps, ArrayList<Category> categories) {
 
@@ -65,6 +65,9 @@ public class DataBaseConnexion {
         }
     }
 
+    /**
+     * Extract data from database and push it in local variables
+     */
     public void getData() {
 
         // get categories
@@ -100,6 +103,9 @@ public class DataBaseConnexion {
         }
     }
 
+    /**
+     * Return the list of apps
+     */
     public ArrayList<App> getApps() {
 
         if (apps == null)
@@ -108,6 +114,9 @@ public class DataBaseConnexion {
         return apps;
     }
 
+    /**
+     * Return the list of categories
+     */
     public ArrayList<Category> getCategories() {
 
         if (categories == null)
@@ -116,85 +125,10 @@ public class DataBaseConnexion {
         return categories;
     }
 
-    // retorna id de app
-//    public long createApp(App app) {
-//
-//        ContentValues values = new ContentValues();
-//
-//        values.put("name", app.getName());
-//        values.put("author", app.getAuthor());
-//        values.put("price", app.getPrice());
-//        values.put("description", app.getDescription());
-//        values.put("image", app.getImage());
-//        values.put("image_bitmap", getImageBytes(app.getImageBitmap()));
-//        values.put("category", app.getCategory().getId());
-//
-//        return database.insert(dbHelper.APP_TABLE_NAME, null, values);
-//    }
-
-//    public ArrayList<App> getApps() {
-//
-//        String query = "select * from " + dbHelper.APP_TABLE_NAME;
-//        Cursor cursor = database.rawQuery(query, null);
-//
-//        ArrayList<App> apps = new ArrayList<>();
-//
-//        while (cursor.moveToNext()) {
-//
-//            App app = new App();
-//
-//            app.setName(cursor.getString(1));
-//            app.setAuthor(cursor.getString(2));
-//            app.setPrice(cursor.getString(3));
-//            app.setDescription(cursor.getString(4));
-//            app.setImage(cursor.getString(5));
-//            app.setImageBitmap(getImageBitmap(cursor.getBlob(6)));
-//            app.setCategory(getCategory2(cursor.getInt(7)));
-//
-//            apps.add(app);
-//        }
-//
-//        if (apps.size() > 0)
-//            return apps;
-//        // may return apps only
-//        return null;
-//    }
-
-//    public ArrayList<Category> getCategories() {
-//
-//        String query = "select * from " + dbHelper.CATEGORY_TABLE_NAME;
-//        Cursor cursor = database.rawQuery(query, null);
-//
-//        ArrayList<Category> categories = new ArrayList<>();
-//
-//        while (cursor.moveToNext()) {
-//
-//            categories.add(new Category(cursor.getInt(0), cursor.getString(1)));
-//        }
-//
-//        if (categories.size() > 0)
-//            return categories;
-//
-//        return null;
-//    }
-
-//    public Category getCategory(int id) {
-//
-//        String query = "select * from " + dbHelper.CATEGORY_TABLE_NAME + " where id=?";
-//        Cursor cursor = database.rawQuery(query, new String[]{""+id});
-//
-//        ArrayList<Category> categories = new ArrayList<>();
-//
-//        if (cursor.moveToFirst()) {
-//
-//            Category category = new Category(cursor.getInt(0), cursor.getString(1));
-//            return category;
-//        }
-//
-//        return null;
-//    }
-
-    public Category getCategory(int id) {
+    /**
+     * Obtain category with the param id from local variable
+     */
+    private Category getCategory(int id) {
 
         for (Category category: categories) {
             if (category.getId() == id)
@@ -203,14 +137,18 @@ public class DataBaseConnexion {
         return null;
     }
 
-    // convert image from bitmap to byte array
+    /**
+     * Convert image from bitmap to byte array
+     */
     private static byte[] getImageBytes(Bitmap image) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.PNG, 0, stream);
         return stream.toByteArray();
     }
 
-    // convert image from byte array to bitmap
+    /**
+     * Convert image from byte array to bitmap
+     */
     private static Bitmap getImageBitmap(byte[] image) {
         return BitmapFactory.decodeByteArray(image, 0, image.length);
     }

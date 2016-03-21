@@ -2,9 +2,7 @@ package com.sebasdev.gravilitytest.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 
-import com.sebasdev.gravilitytest.MainActivity;
 import com.sebasdev.gravilitytest.db.DataBaseConnexion;
 import com.sebasdev.gravilitytest.model.App;
 import com.sebasdev.gravilitytest.model.Category;
@@ -73,25 +71,10 @@ public class DataManager {
         return false;
     }
 
-//    public static void getData(Context context) {
-//
-//        if (MainActivity.isOnline) {
-//            try {
-//                getServiceData();
-//            } catch (Exception e) {
-//                getDBData(context);
-//                if (e instanceof JSONException)
-//                    throw JSONException;
-//            }
-//        } else {
-//            getDBData(context);
-//        }
-//    }
-
     public static void getServiceData(Context context) throws IOException, JSONException {
 
         ServiceRequest request = new ServiceRequest();
-//        try {
+
         String result = request.requestString(SERVICE_URL);
 
         JSONObject jsonResult = new JSONObject(result);
@@ -147,14 +130,6 @@ public class DataManager {
         // save apps and categories in database
         DataBaseConnexion conn = new DataBaseConnexion(context);
         conn.syncDataBase(apps, categories);
-
-//        } catch (IOException e) {
-////            e.printStackTrace();
-//            Log.d("DataManager", "Error al obtener respuesta del servidor");
-//        } catch (JSONException e) {
-////            e.printStackTrace();
-//            Log.d("DataManager", "Error al procesar la respuesta, parece que no es un JSON valido");
-//        }
     }
 
     public static void getDBData(Context context) {

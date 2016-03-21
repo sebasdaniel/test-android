@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sebasdev.gravilitytest.MainActivity;
 import com.sebasdev.gravilitytest.R;
 import com.sebasdev.gravilitytest.interfaces.ItemClickListener;
 import com.sebasdev.gravilitytest.model.App;
@@ -37,8 +38,13 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppsViewHolder
         }
 
         public void bind(final App app, final ItemClickListener listener) {
-            // TODO: 18/03/16 condition for Picasso, charge image only when app has internet connection to
-            Picasso.with(itemView.getContext()).load(app.getImage()).fit().into(appImg);
+
+            if (MainActivity.isOnline){
+                Picasso.with(itemView.getContext()).load(app.getImage()).fit().into(appImg);
+            } else {
+                appImg.setImageBitmap(app.getImageBitmap());
+            }
+
             appName.setText(app.getName());
             appAuthor.setText(app.getAuthor());
 

@@ -1,7 +1,6 @@
 package com.sebasdev.gravilitytest.fragment;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -18,12 +17,9 @@ import android.widget.TextView;
 import com.sebasdev.gravilitytest.MainActivity;
 import com.sebasdev.gravilitytest.R;
 import com.sebasdev.gravilitytest.adapter.AppsAdapter;
-import com.sebasdev.gravilitytest.adapter.CategoriesAdapter;
 import com.sebasdev.gravilitytest.interfaces.FragmentInteractionListener;
 import com.sebasdev.gravilitytest.interfaces.ItemClickListener;
 import com.sebasdev.gravilitytest.model.App;
-import com.sebasdev.gravilitytest.model.Category;
-import com.sebasdev.gravilitytest.util.DataManager;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -132,17 +128,20 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
         TextView tvPrice = (TextView) v.findViewById(R.id.infoTvAppPrice);
         TextView tvDescription = (TextView) v.findViewById(R.id.infoTvAppDescription);
 
-        // TODO: 18/03/16 condition for Picasso, charge image only when app has internet connection to
-        Picasso.with(getContext()).load(selectedApp.getImage()).into(image);
+        if (MainActivity.isOnline) {
+            Picasso.with(getContext()).load(selectedApp.getImage()).into(image);
+        } else {
+            image.setImageBitmap(selectedApp.getImageBitmap());
+        }
 
         tvName.setText(selectedApp.getName());
-        tvAuthor.setText("Autor: " + selectedApp.getAuthor());
-        tvPrice.setText("Precio: " + selectedApp.getPrice());
+        tvAuthor.setText("Author: " + selectedApp.getAuthor());
+        tvPrice.setText("Price: " + selectedApp.getPrice());
         tvDescription.setText(selectedApp.getDescription());
 
-        Button cerrar = (Button) v.findViewById(R.id.btnCloseInfo);
+        Button btnClose = (Button) v.findViewById(R.id.btnCloseInfo);
 
-        cerrar.setOnClickListener(
+        btnClose.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

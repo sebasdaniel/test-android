@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
     }
 
     private void updateAppsFragment() {
-        // TODO: 19/03/16 update info fragment
+        // TODO: 19/03/16 update info fragment for tablet layout
     }
 
     private boolean isConnected() {
@@ -208,11 +208,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                     DataManager.getServiceData(MainActivity.this);
                     return true;
                 } catch (IOException e) {
-//                e.printStackTrace();
                     error = "No se pudo obtener respuesta del servidor";
                     Log.d(DEBUG_TAG, error);
                 } catch (JSONException e) {
-//                e.printStackTrace();
                     error = "No se pudo procesar la respuesta, parece que no es un JSON válido";
                     Log.d(DEBUG_TAG, error);
                 }
@@ -232,15 +230,12 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
             if (!result)
                 showErrorDialog();
-//            if (result) {
+
             if(portrait){
                 setFragment(FRAGMENT_CATEGORIES);
             } else {
                 setFragments();
             }
-//            } else {
-//                showErrorDialog();
-//            }
         }
 
         private void showErrorDialog() {
