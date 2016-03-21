@@ -201,34 +201,46 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            try {
-                DataManager.getServiceData();
+            // if it's online but there is a error, load the values from database and show error, else only load from database
+            if (isOnline) {
+
+                try {
+                    DataManager.getServiceData(MainActivity.this);
+                    return true;
+                } catch (IOException e) {
+//                e.printStackTrace();
+                    error = "No se pudo obtener respuesta del servidor";
+                    Log.d(DEBUG_TAG, error);
+                } catch (JSONException e) {
+//                e.printStackTrace();
+                    error = "No se pudo procesar la respuesta, parece que no es un JSON válido";
+                    Log.d(DEBUG_TAG, error);
+                }
+
+                DataManager.getDBData(MainActivity.this);
+                return false;
+
+            } else {
+                DataManager.getDBData(MainActivity.this);
                 return true;
-            } catch (IOException e) {
-//                e.printStackTrace();
-                error = "No se pudo obtener respuesta del servidor";
-                Log.d(DEBUG_TAG, error);
-            } catch (JSONException e) {
-//                e.printStackTrace();
-                error = "No se pudo procesar la respuesta, parece que no es un JSON válido";
-                Log.d(DEBUG_TAG, error);
             }
-            return false;
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
             mDialog.dismiss();
 
-            if (result) {
-                if(portrait){
-                    setFragment(FRAGMENT_CATEGORIES);
-                } else {
-                    setFragments();
-                }
-            } else {
+            if (!result)
                 showErrorDialog();
+//            if (result) {
+            if(portrait){
+                setFragment(FRAGMENT_CATEGORIES);
+            } else {
+                setFragments();
             }
+//            } else {
+//                showErrorDialog();
+//            }
         }
 
         private void showErrorDialog() {

@@ -1,7 +1,11 @@
 package com.sebasdev.gravilitytest.util;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.sebasdev.gravilitytest.MainActivity;
+import com.sebasdev.gravilitytest.db.DataBaseConnexion;
 import com.sebasdev.gravilitytest.model.App;
 import com.sebasdev.gravilitytest.model.Category;
 import com.sebasdev.gravilitytest.network.ServiceRequest;
@@ -69,58 +73,80 @@ public class DataManager {
         return false;
     }
 
-    public static void getServiceData() throws IOException, JSONException {
-        // TODO: 19/03/16 validar si hay conexion para obtenerlos de internet o de la bd
+//    public static void getData(Context context) {
+//
+//        if (MainActivity.isOnline) {
+//            try {
+//                getServiceData();
+//            } catch (Exception e) {
+//                getDBData(context);
+//                if (e instanceof JSONException)
+//                    throw JSONException;
+//            }
+//        } else {
+//            getDBData(context);
+//        }
+//    }
+
+    public static void getServiceData(Context context) throws IOException, JSONException {
+
         ServiceRequest request = new ServiceRequest();
 //        try {
-            String result = request.requestString(SERVICE_URL);
+        String result = request.requestString(SERVICE_URL);
 
-            JSONObject jsonResult = new JSONObject(result);
+        JSONObject jsonResult = new JSONObject(result);
 
-            JSONObject feed = jsonResult.getJSONObject("feed");
-            JSONArray entry = feed.getJSONArray("entry");
+        JSONObject feed = jsonResult.getJSONObject("feed");
+        JSONArray entry = feed.getJSONArray("entry");
 
-            // procesar el json
-            for (int i=0; i<entry.length(); i++) {
+        // procesar el json
+        for (int i=0; i<entry.length(); i++) {
 
-                App app = new App();
-                JSONObject appJson = entry.getJSONObject(i);
+            App app = new App();
+            JSONObject appJson = entry.getJSONObject(i);
 
-                JSONObject appName = appJson.getJSONObject("im:name");
-                app.setName(appName.getString("label"));
+            JSONObject appName = appJson.getJSONObject("im:name");
+            app.setName(appName.getString("label"));
 
-                JSONArray imgArray = appJson.getJSONArray("im:image");
-                app.setImage(getUrlImage(imgArray));
+            JSONArray imgArray = appJson.getJSONArray("im:image");
+            app.setImage(getUrlImage(imgArray));
 
-                JSONObject appSummary = appJson.getJSONObject("summary");
-                app.setDescription(appSummary.getString("label"));
+            JSONObject appSummary = appJson.getJSONObject("summary");
+            app.setDescription(appSummary.getString("label"));
 
-                JSONObject appPriceAttributes = appJson.getJSONObject("im:price").getJSONObject("attributes");
-                app.setPrice(appPriceAttributes.getString("currency") + " " + appPriceAttributes.getString("amount"));
+            JSONObject appPriceAttributes = appJson.getJSONObject("im:price").getJSONObject("attributes");
+            app.setPrice(appPriceAttributes.getString("currency") + " " + appPriceAttributes.getString("amount"));
 
-                JSONObject appAuthor = appJson.getJSONObject("im:artist");
-                app.setAuthor(appAuthor.getString("label"));
+            JSONObject appAuthor = appJson.getJSONObject("im:artist");
+            app.setAuthor(appAuthor.getString("label"));
 
-                JSONObject catAttributes = appJson.getJSONObject("category").getJSONObject("attributes");
-                int idCategory = Integer.parseInt(catAttributes.getString("im:id"));
+            JSONObject catAttributes = appJson.getJSONObject("category").getJSONObject("attributes");
+            int idCategory = Integer.parseInt(catAttributes.getString("im:id"));
 
-                // set the category if it exists, else create a new category
-                if (isCategory(idCategory)) {
-                    app.setCategory(getCategory(idCategory));
+            Bitmap imageBitmap = request.requestImage(app.getImage()); // TODO: 21/03/16 set default image if not get response
+            app.setImageBitmap(imageBitmap);
 
-                } else {
-                    Category category = new Category();
+            // set the category if it exists, else create a new category
+            if (isCategory(idCategory)) {
+                app.setCategory(getCategory(idCategory));
 
-                    category.setId(idCategory);
-                    category.setLabel(catAttributes.getString("label"));
+            } else {
+                Category category = new Category();
 
-                    app.setCategory(category);
+                category.setId(idCategory);
+                category.setLabel(catAttributes.getString("label"));
 
-                    categories.add(category);
-                }
+                app.setCategory(category);
 
-                apps.add(app);
+                categories.add(category);
             }
+
+            apps.add(app);
+        }
+
+        // save apps and categories in database
+        DataBaseConnexion conn = new DataBaseConnexion(context);
+        conn.syncDataBase(apps, categories);
 
 //        } catch (IOException e) {
 ////            e.printStackTrace();
@@ -129,6 +155,14 @@ public class DataManager {
 ////            e.printStackTrace();
 //            Log.d("DataManager", "Error al procesar la respuesta, parece que no es un JSON valido");
 //        }
+    }
+
+    public static void getDBData(Context context) {
+
+        DataBaseConnexion conn = new DataBaseConnexion(context);
+
+        apps = conn.getApps();
+        categories = conn.getCategories();
     }
 
     // obtiene la url de la imagen
