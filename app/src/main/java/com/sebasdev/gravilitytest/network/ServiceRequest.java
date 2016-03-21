@@ -56,13 +56,12 @@ public class ServiceRequest {
             conn.connect();
 
             int response = conn.getResponseCode();
-            Log.d(DEBUG_TAG, "The response is: " + response);
+//            Log.d(DEBUG_TAG, "The response is: " + response);
 
             is = conn.getInputStream();
 
             // Convert the InputStream into a string
-            String contentAsString = readString(is /*, len*/);
-            Log.d(DEBUG_TAG, "The content is: " + contentAsString);
+            String contentAsString = readString(is);
 
             return contentAsString;
 
@@ -93,14 +92,12 @@ public class ServiceRequest {
             conn.connect();
 
             int response = conn.getResponseCode();
-            Log.d(DEBUG_TAG, "The response is: " + response);
+//            Log.d(DEBUG_TAG, "The response loading image is: " + response);
 
             is = conn.getInputStream();
 
             // Convert the InputStream into a bitmap
             Bitmap contentAsBitmap = readImage(is);
-
-            Log.d(DEBUG_TAG, "The image density is: " + contentAsBitmap.getDensity());
 
             return contentAsBitmap;
 
