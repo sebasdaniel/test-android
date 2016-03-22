@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
     public static final int FRAGMENT_CATEGORIES = 0;
     public static final int FRAGMENT_APPS = 1;
+    public static final int FRAGMENT_NONE = 2;
 
     public static boolean isOnline;
 
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
      */
     @Override
     public void onBackPressed() {
-        if (currentFragment == FRAGMENT_CATEGORIES) {
+        if (currentFragment == FRAGMENT_CATEGORIES || currentFragment == FRAGMENT_NONE) {
             confirmFinish();
         } else {
             goBack();
