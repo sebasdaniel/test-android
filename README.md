@@ -1,11 +1,11 @@
 # test-gravility-android
 
-####**Prueba Android de Gravility**
+###**Prueba Android de Gravility**
 
 Muestra un catálogo de apps mediante el consumo del servicio https://itunes.apple.com/us/rss/topfreeapplications/limit=20/json.
 
 Características
---------------------
+--------------
 > **Nota:** Al iniciar siempre carga un Splash Screen que dura lo que se demora la app en iniciar.
 
 ####**Smarphone:**
