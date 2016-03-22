@@ -2,6 +2,7 @@ package com.sebasdev.gravilitytest;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -80,14 +81,50 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (currentFragment == FRAGMENT_APPS) {
-                    setFragment(FRAGMENT_CATEGORIES);
-                    if (getSupportActionBar() != null)
-                        getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_launcher);
-                }
+                goBack();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Process device back button
+     */
+    @Override
+    public void onBackPressed() {
+        if (currentFragment == FRAGMENT_CATEGORIES) {
+            confirmFinish();
+        } else {
+            goBack();
+        }
+    }
+
+    /**
+     * Return to previous fragment
+     */
+    private void goBack() {
+        if (currentFragment == FRAGMENT_APPS) {
+            setFragment(FRAGMENT_CATEGORIES);
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_launcher);
+        }
+    }
+
+    /**
+     * Show dialog to confirm exit the app
+     */
+    private void confirmFinish() {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmar")
+                .setMessage("Esta seguro que desea salir?")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MainActivity.super.onBackPressed();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     /**

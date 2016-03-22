@@ -53,5 +53,6 @@
         android:background="@drawable/custom_button_background"
         android:text="@string/btn_dialog_label"
         android:id="@+id/btnCloseInfo"
-        android:layout_gravity="right" />
+        android:layout_gravity="right"
+        android:textColor="#555555" />
 </LinearLayout>
