@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -150,6 +151,7 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
         TextView tvAuthor = (TextView) v.findViewById(R.id.infoTvAppAuthor);
         TextView tvPrice = (TextView) v.findViewById(R.id.infoTvAppPrice);
         TextView tvDescription = (TextView) v.findViewById(R.id.infoTvAppDescription);
+        tvDescription.setMovementMethod(new ScrollingMovementMethod());
 
         if (MainActivity.isOnline) {
             Picasso.with(getContext()).load(selectedApp.getImage()).into(image);

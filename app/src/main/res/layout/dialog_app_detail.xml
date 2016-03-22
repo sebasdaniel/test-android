@@ -7,7 +7,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="@dimen/dialog_padding_between"
         android:id="@+id/infoImageApp"
         android:layout_gravity="center_horizontal"
@@ -16,7 +16,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dialog_padding_between"
+        android:layout_marginBottom="@dimen/dialog_padding_small"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
         android:id="@+id/infoTvAppName" />
@@ -24,7 +24,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dialog_padding_small"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Medium Text"
         android:id="@+id/infoTvAppAuthor" />
@@ -44,8 +43,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/infoTvAppDescription"
-        android:maxLines="5"
-        android:minLines="1" />
+        android:scrollbars="vertical"
+        android:maxLines="6" />
 
     <Button
         android:layout_width="wrap_content"
