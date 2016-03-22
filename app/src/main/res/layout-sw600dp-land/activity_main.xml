@@ -41,11 +41,19 @@
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dialog_padding_small"
+            android:background="@color/borderDivider"/>
+
         <LinearLayout
             android:id="@+id/display_content"
             android:orientation="vertical"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:paddingRight="@dimen/dialog_padding_small"
+            android:paddingTop="@dimen/dialog_padding_small"
             android:layout_weight="3" />
     </LinearLayout>
 </LinearLayout>

@@ -23,12 +23,14 @@ import android.widget.TextView;
 import com.sebasdev.gravilitytest.fragment.AppsFragment;
 import com.sebasdev.gravilitytest.fragment.CategoriesFragment;
 import com.sebasdev.gravilitytest.interfaces.FragmentInteractionListener;
+import com.sebasdev.gravilitytest.model.App;
 import com.sebasdev.gravilitytest.model.Category;
 import com.sebasdev.gravilitytest.util.DataManager;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements FragmentInteractionListener {
 
@@ -37,11 +39,11 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
     public static final int FRAGMENT_NONE = 2;
 
     public static boolean isOnline;
+    public static boolean portrait = false;
 
     private CategoriesFragment categoriesFragment;
     private AppsFragment appsFragment;
     private int currentFragment;
-    private boolean portrait = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,22 +203,23 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
      */
     private void setFragments() {
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        currentFragment = FRAGMENT_NONE;
+        appsFragment.setApps(DataManager.getApps());
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         transaction.replace(R.id.main_content, categoriesFragment);
-        transaction.commit();
-
         transaction.replace(R.id.display_content, appsFragment);
+
         transaction.commit();
     }
 
     /**
      * Set the new data for AppsFragment and show it
      */
-    private void updateAppsFragment() {
-        // TODO: 19/03/16 update info fragment for tablet layout
+    private void updateAppsFragment(ArrayList<App> apps) {
+        appsFragment.updateApps(apps);
     }
 
     /**
@@ -244,8 +247,12 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
             getSupportActionBar().setTitle(category.getLabel());
 
         // TODO: 20/03/16 verify if it's tablet or landcape
-        appsFragment.setApps(DataManager.getAppsByCategory(category));
-        setFragment(FRAGMENT_APPS);
+        if (portrait) {
+            appsFragment.setApps(DataManager.getAppsByCategory(category));
+            setFragment(FRAGMENT_APPS);
+        } else {
+            updateAppsFragment(DataManager.getAppsByCategory(category));
+        }
     }
 
     /**

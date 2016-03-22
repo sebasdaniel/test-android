@@ -17,5 +17,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_separator_height"
-        android:background="#ffd5d5d5"/>
+        android:background="@color/borderDivider"/>
 </LinearLayout>

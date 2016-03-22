@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,8 +39,9 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private View view;
     private App selectedApp = null;
-    private ArrayList<App> apps;
+    private ArrayList<App> apps = new ArrayList<>();
 
     public AppsFragment() {
         // Required empty public constructor
@@ -50,14 +52,18 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
         this.apps = apps;
     }
 
+    public void updateApps(ArrayList<App> apps) {
+        this.apps = apps;
+        updateLayoutManager();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_apps, container, false);
+        view = inflater.inflate(R.layout.fragment_apps, container, false);
+        setRecyclerView();
 
-        setRecyclerView(v);
-
-        return v;
+        return view;
     }
 
     @Override
@@ -96,17 +102,26 @@ public class AppsFragment extends Fragment implements ItemClickListener<App> {
             Log.e("CreateDialog", "La app seleccionada es null");
     }
 
-    private void setRecyclerView(View v) {
+    private void setRecyclerView() {
 
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view_apps);
-
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_apps);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
-        // TODO: 19/03/16 use other layout manager when is tablet
-        // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(getContext());
+        updateLayoutManager();
+    }
+
+    private void updateLayoutManager() {
+
+        if (MainActivity.portrait) {
+            // use a linear layout manager
+            mLayoutManager = new LinearLayoutManager(getContext());
+        } else {
+            // use a grid layout manager with 2 columns
+            mLayoutManager = new GridLayoutManager(getContext(), 2);
+        }
+
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter

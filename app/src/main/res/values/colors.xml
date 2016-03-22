@@ -6,4 +6,5 @@
     <color name="white">#FFFFFF</color>
     <color name="colorButtonDisabled">#FFE57F</color>
     <color name="colorButtonPressed">#FBC02D</color>
+    <color name="borderDivider">#ffd5d5d5</color>
 </resources>
