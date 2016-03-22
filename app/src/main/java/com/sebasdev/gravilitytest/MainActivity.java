@@ -246,7 +246,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(category.getLabel());
 
-        // TODO: 20/03/16 verify if it's tablet or landcape
         if (portrait) {
             appsFragment.setApps(DataManager.getAppsByCategory(category));
             setFragment(FRAGMENT_APPS);
