@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         private String error = "";
 
         /**
-         * Show a charging data progres dialog
+         * Show a charging data progress dialog
          */
         @Override
         protected void onPreExecute() {
