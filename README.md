@@ -1,6 +1,6 @@
-# test-gravility-android
+# test-android
 
-###**Prueba Android de Gravility**
+###**Prueba Android**
 
 Muestra un catálogo de apps mediante el consumo del servicio https://itunes.apple.com/us/rss/topfreeapplications/limit=20/json.
 
